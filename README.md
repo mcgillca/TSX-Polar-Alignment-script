@@ -126,7 +126,9 @@ Clear will clear the current display text.
 
 **Changelog**
 V 1.0  - Initial release
+
 V 1.1  - Tidied up interface. Added scrollbar and clear button.
+
 V 1.2  - Added the abilty to define a filter to be used with plate solving.
          Now removes the image and SRC files by default.
 	 Binning and filter wheel positions are restored after the run
