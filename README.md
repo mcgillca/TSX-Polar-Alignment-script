@@ -57,7 +57,7 @@ example, any azimulthal rotations would not change the position of the image,
 just its orientation). The (HA1, DEC) may be close to the zenth or
 east-west axis.
 
-Aim of the script
+**Aim of the script**
 
 The aim of the script is to get you close enough to polar alignment that
 after running a Tpoint model, the star you choose for accurate polar alignment
@@ -81,7 +81,7 @@ and try to get close to zero starting from from this much closer location,
 I can then get to within 2 arc minutes of pole as confirmed by Tpoint, so you
 can use the script to get accurate alignment even without Tpoint.
 
-Running the Script
+**Running the Script**
 
 Before running the script, you must disable the Tpoint pointing corrections.
 Otherwise, the script will try and get you bac to your previous polar
@@ -124,7 +124,7 @@ which will limit the accuracy that can be achieved.
 
 Clear will clear the current display text.
 
-Changelog
+**Changelog**
 V 1.0  - Initial release
 V 1.1  - Tidied up interface. Added scrollbar and clear button.
 V 1.2  - Added the abilty to define a filter to be used with plate solving.
