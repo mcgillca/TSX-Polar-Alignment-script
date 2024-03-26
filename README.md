@@ -125,6 +125,7 @@ which will limit the accuracy that can be achieved.
 Clear will clear the current display text.
 
 **Changelog**
+
 V 1.0  - Initial release
 
 V 1.1  - Tidied up interface. Added scrollbar and clear button.
