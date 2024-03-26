@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Exec=/usr/local/bin/PAUI.py
+Name=PA
+Icon=/usr/share/pixmaps/PAIcon.png
+Categories=Education
