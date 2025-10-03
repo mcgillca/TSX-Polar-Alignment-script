@@ -122,4 +122,5 @@ V 1.1  - Tidied up interface. Added scrollbar and clear button.
 V 1.2  - Added the abilty to define a filter to be used with plate solving.
          Now removes the image and SRC files by default.
 	 Binning and filter wheel positions are restored after the run
-
+V 1.3  - Now does not change subframe state. Allows large cameras to set limited
+         area for plate solve to speed this up.

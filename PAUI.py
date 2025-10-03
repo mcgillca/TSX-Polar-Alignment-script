@@ -17,8 +17,10 @@
 # V 1.2  - Added the abilty to define a filter to be used with plate solving.
 #          Now removes the image and SRC files by default.
 #          Binning and filter wheel positions are restored after the run
+# V 1.3  - Now does not change subframe state. Allows large cameras to set limited
+#          area for plate solve to speed this up.
 #
-# 25 March 2024
+# 03 October 2025
 
 import socket
 import time
@@ -530,7 +532,6 @@ def takeimagebin( exp, bin ):
     ccdsoftCamera.ImageReduction = 0;   \
     ccdsoftCamera.Frame = 1;\
     ccdsoftCamera.Delay = 0;\
-    ccdsoftCamera.Subframe = false;\
     ccdsoftCamera.BinX = " + str(bin) + " ;\
     ccdsoftCamera.BinY = " + str(bin) + " ;\
     ccdsoftCamera.TakeImage();\
