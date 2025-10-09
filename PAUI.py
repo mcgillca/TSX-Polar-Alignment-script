@@ -42,9 +42,13 @@ import platform
 # Parameters for controlling take picture
 CAM_DURATION = 4.0    # Number of seconds for picture
 CAM_BINNING  = 4      # Binning of image
-CAM_SCALE    = 6.872  # Arcsec/pixel of binned image - used for platesolve
+CAM_SCALE    = 6.764  # Arcsec/pixel of binned image - used for platesolve
+# 2.31 for Nerpio, 6.764 for Weybridge, 1.7 for DSS images
 CAM_FILTER   = ""     # Set if you want to specify a filter for platesolve
-# 2.31 for Nerpio, 6.872 for Weybridge, 1.7 for DSS images
+CAM_SUBFRAME = 4      # Option to reduce the size of the frame used. Set to 2 or 4.
+                      # 2 Reduces to half the image
+                      # 4 Reduces to one quarter of the image
+                      # Setting to one does not set a subframe
 
 # Parameters for controlling where to take images
 PA_DEC       = 60.0   # Which declination to take images?
@@ -519,7 +523,90 @@ def SetImageBin(bin):
     "
     return TSXSendTry(MESSAGE)
 
+def GetImageSubFrame():
+    global subFrame, subLeft, subRight, subTop, subBottom
+
+    MESSAGE = " \
+    /* Java Script */\
+    l = ccdsoftCamera.SubframeLeft;\
+    r = ccdsoftCamera.SubframeRight;\
+    t = ccdsoftCamera.SubframeTop;\
+    b = ccdsoftCamera.SubframeBottom;\
+    f = ccdsoftCamera.Subframe;\
+    out = String(f) + '|' + String(l) + '|' + String(r) + '|'+String(t)+'|'+ String(b);\
+    "
+    data = TSXSendTry(MESSAGE)
+    subFrame = int(data[0])
+    subLeft = int(data[1])
+    subRight = int(data[2])
+    subTop = int(data[3])
+    subBottom = int(data[4])
+
+    return subFrame
+
+def RestoreImageSubFrame():
+    global subFrame, subLeft, subRight, subTop, subBottom
+    
+    MESSAGE = "\
+    /* Java Script */\
+    l = ccdsoftCamera.SubframeLeft = " + str(subLeft)+";\
+    r = ccdsoftCamera.SubframeRight = " + str(subRight)+";\
+    t = ccdsoftCamera.SubframeTop = " + str(subTop)+";\
+    b = ccdsoftCamera.SubframeBottom = " + str(subBottom)+";\
+    f = ccdsoftCamera.Subframe = " + str(subFrame)+";\
+    "
+    data = TSXSendTry(MESSAGE)
+
+def SetImageSubFrame(reduction):
+    # If reduction = 1, then no subframe required
+    if reduction == 1:
+        TSXSendTry("ccdsoftCamera.Subframe = 0")
+        return
+    
+    # Now find existing camera width. Must first set binning state to 1 since subframe
+    # is set in unbinned pixels
+    SetImageBin(1)
+    
+    # Now get height and width
+    MESSAGE = " \
+    /* Java Script */\
+    w = ccdsoftCamera.WidthInPixels;\
+    h = ccdsoftCamera.HeightInPixels;\
+    out = '|' + String(w) + '|' + String(h) + '|';\
+    "
+    data = TSXSendTry(MESSAGE)
+    
+    w = int(data[1])
+    h = int(data[2])
+    
+    # Once we have that, can work out the subframe corners
+    if reduction == 2:
+        subleft = int(w / 4)
+        subright = int (3 * w / 4)
+        subtop = int(h / 4)
+        subbottom = int(3 * h / 4)
+    else :
+        subleft = int(3 * w / 8)
+        subright = int (5 * w / 8)
+        subtop = int(3 * h / 8)
+        subbottom = int(5 * h / 8)
+
+    # Now we can set the subframe up
+    MESSAGE = "    /* Java Script */\
+    ccdsoftCamera.SubframeLeft = " + str(subleft) + ";\
+    ccdsoftCamera.SubframeRight = " + str(subright) + ";\
+    ccdsoftCamera.SubframeTop = " + str(subtop) + ";\
+    ccdsoftCamera.SubframeBottom = " + str(subbottom) + ";\
+    ccdsoftCamera.Subframe = 1;\
+    "
+    TSXSendTry(MESSAGE)
+    return
+    
 def takeimagebin( exp, bin ):
+    # First set up subframe for exposure
+    SetImageSubFrame(CAM_SUBFRAME)
+    
+    # Now take binned image
     TCP_IP = '127.0.0.1'
     TCP_PORT = 3040
     BUFFER_SIZE = 1024
@@ -1087,6 +1174,9 @@ def RestoreCameraState():
     global initfilter
     SetImageBin(initbin)
     queue.put(logtime()+"Reset camera bin state")
+    RestoreImageSubFrame()
+    queue.put(logtime()+"Reset camera subframe")
+    
     if CAM_FILTER != "":
         TSXSendTry("ccdsoftCamera.FilterIndexZeroBased = " + \
                                  str(initfilter) + ";")
@@ -1096,6 +1186,8 @@ def PolarAlign(queue):
     global initbin
     # Store current bin state
     initbin = GetImageBin()
+    # Store current state of subfram
+    GetImageSubFrame()
     
     # if using test data from Mathematica, read in from file
     if testdata:
