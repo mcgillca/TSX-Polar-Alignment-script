@@ -30,6 +30,10 @@ for platesolving e.g. CAM_FILTER = "Lum". If left set to "", will not
 attempt to set the filter, so leave this blank if you don't have a filter
 wheel.
 
+CAM_SUBFRAME: set this to 1 to use the entire frame or 2 to use half. Anything else will
+the camera to use one quarter of the frame. Dramatically speeds up plate solving for very large
+sensors.
+
 Image location data:
 
 PA_DEC: the script takes two images at the same DEC to work out the
@@ -124,3 +128,7 @@ V 1.2  - Added the abilty to define a filter to be used with plate solving.
 	 Binning and filter wheel positions are restored after the run
 V 1.3  - Now does not change subframe state. Allows large cameras to set limited
          area for plate solve to speed this up.
+V 1.4  - Now implemented CAM_SUBFRAME to allow users to specify whether to use the entire frame
+         (if equal 1), half the frame if equal 2 or 1 quarter if set to anything else.
+         The subframe state is reset after polar alignment is finished.
+
