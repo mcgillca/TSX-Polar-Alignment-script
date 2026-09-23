@@ -239,8 +239,10 @@ In short, a good pair has:
    distances, so that choice stops being reliable and you may get odd results.
 
 7. **Away from the pole.** Close to the pole the two images will be close on
-   the sky, magnifying any misalignment errors. The settings dialogue will
-   not allow setting declinations above ±80°.
+   the sky. This limits how far from polar alignment the mount can be at the start.
+   For this reason, the settings dialogue will not allow setting declinations above ±80°.
+   Even at that limit the mount can be 8° from the pole and the script will still find
+   the right answer; at the default declination of 60° it will cope with 25°.
 
 ---
 
