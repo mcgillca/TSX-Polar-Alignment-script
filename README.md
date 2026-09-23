@@ -2,11 +2,8 @@
 
 **Polar alignment for TheSkyX, on Mac, Windows and Linux.**
 
-The script takes two plate-solved images at the same declination but different
-hour angles, works out where your mount's polar axis really points, and then
-shows — live, updating after every image — how far to raise or lower it and
-which way to rotate it. You watch the numbers shrink while your hands are on
-the adjusters.
+The script takes two plate-solved images at the same declination, works out where your
+mount's polar axis points, then provides live feedback on how to adjust the polar alignment.
 
 The aim is to get you close enough that after running a TPoint model, the star
 you choose for accurate polar alignment is still in the field of view. In
@@ -20,25 +17,17 @@ practice it does better than that: see [How accurate is it?](#how-accurate-is-it
 
 Version 2 is a complete rewrite. Everything the old script did, it still does.
 
-- **No more editing the script.** Exposure, binning, image scale, filter,
-  subframe, declination and the two hour angles are all in a Settings dialog
-  and remembered between sessions.
-- **Proper installers** for macOS, Windows and Linux. Nothing to install
-  first — not even Python.
-- **It checks your choice of alignment points** and tells you, in plain
-  numbers, what they will achieve and what is wrong with them if anything is.
-  It will not let you save two points that are below your horizon.
+- **All parameters specified from the settings dialogue**
+- **Now has installers for Mac, Linux and Windows**
+- **Immediate feedback on your choice of alignment points:** script tells you
+  if there are issues.
 - **It reads your custom horizon** if TheSkyX has one, so a point behind a
   tree is caught before you slew to it.
 - **It waits for darkness.** If the first image has too few stars the script
   waits a minute and tries again, rather than giving up, and starts over when
   the sky is dark enough.
-- **It survives a failed plate solve**, which happens routinely while you are
-  moving the mount.
 - **Filter names are read from your wheel** instead of typed in. If you have
   no filter wheel, the setting disappears and the script never touches one.
-- **It says what it put back.** Binning, subframe and filter are restored when
-  the run ends, however it ends, and the log says so.
 
 Upgrading from v1.x: your old settings were constants inside `PAUI.py`. Open
 Settings and enter them once; they are saved to `~/.tsxpolar.json` from then
@@ -50,7 +39,7 @@ on.
 
 - **TheSkyX**, running on the same machine, with its **TCP server enabled**
   (Tools menu). The script will not start without it and will tell you so.
-- A connected **mount** and **camera**.
+- A connected **mount** and **camera** and optionally **filter wheel.**
 - **TPoint pointing corrections switched off** while the script runs — see
   [Workflow](#workflow).
 - An internet connection the first time you run it, so it can fetch Python and
@@ -117,8 +106,9 @@ uv run PAUI.py
 
 ## Workflow
 
-TPoint pointing corrections must be off, or the mount will quietly steer back
-towards your *previous* alignment and the script will chase its own tail. It
+TPoint pointing corrections should be off, or the script will steer your mount back
+to your *previous* polar alignment. You can leave TPoint enabled if your previous
+alignment was very close to the pole — but it's safer to disable it. The script
 asks you to confirm this when you press Start.
 
 1. Disable TPoint pointing corrections.
@@ -142,16 +132,19 @@ second, images, and then shows the two corrections:
 Use only the mount's altitude and azimuth adjusters. **Do not move the
 telescope itself** — let it track normally.
 
-It then keeps imaging and updating the numbers as you work. While you are
-turning a bolt the image will be blurred and some solves will fail; the
-script says so and carries on.
+The script keeps imaging and updating the numbers as you work. While you are
+turning a bolt the image will be blurred and some solves will fail; simply
+wait until you have the next plate solved image.
 
 You do not need perfection. Anything within 5 arcminutes is fine for guided
 imaging — polar alignment only prevents field rotation. Unguided imaging wants
 better, and TPoint's own routine will take you the rest of the way.
 
 Press **Stop** when you are done. The script finishes the image it is taking
-before stopping, which avoids upsetting TheSkyX.
+before stopping, which avoids crashing TheSky.
+
+You may need to repeat the run if you were a long way from polar alignment
+at start up.
 
 ---
 
@@ -168,7 +161,7 @@ Everything lives in the **Settings** dialog and is saved to
 | **Binning** | A high bin is fine and speeds up downloads. |
 | **Image scale** | Arcseconds per pixel **at the binning above**. Getting this wrong is the most common cause of failed solves. |
 | **Filter** | Read from your wheel. Leave as *(leave unchanged)* to use whatever is in place. Hidden entirely if you have no wheel. |
-| **Frame area** | Full frame, centre half or centre quarter. Cropping speeds up solving a lot on large sensors. |
+| **Frame area** | Full frame, centre half or centre quarter. Cropping speeds up solving on large sensors. |
 
 ### Alignment
 
@@ -197,26 +190,25 @@ or what is wrong with them:
   the meridian (+7.5°), or raise the declination by 5° (+1.4°).
 ```
 
-Points below your horizon cannot be saved at all.
+Points below your local horizon cannot be saved.
 
 ---
 
 ## Choosing the alignment points
 
-There is a **Choosing the points…** button in the Settings dialog with all of
-this in it. In short, a good pair is:
+**Click "Choosing the points…"** button in the Settings dialog to see this information.
+In short, a good pair has:
 
 1. **Both points visible.** Checked against TheSkyX's custom horizon if you
    have one, so a point 45° up but behind a tree is caught.
 
 2. **Both hour angles the same sign.** Opposite signs put the two images
    either side of the meridian, so the mount flips between them and the tube
-   changes sides of the pier. The script reads the change in flexure as
-   misalignment.
+   changes sides of the pier. Any change in flexure will cause misalignment.
 
-3. **Three to five hours apart.** This is where the solve gets its leverage,
-   and the error falls off as one over the separation:
 
+3. **Three to five hours apart.** This improves accuracy of the calculation:
+   
    | Separation | Resulting error in the axis |
    |---|---|
    | 1 h | 63″ |
@@ -224,22 +216,23 @@ this in it. In short, a good pair is:
    | 4 h | 16″ |
    | 6 h | 10″ |
 
-   Much beyond five hours the two points sit at very different altitudes, so
-   flexure differs more between them.
+   These assume 10″ of error in the measured image positions — plate solve,
+   flexure and seeing combined.  One figure covers them all because a
+   systematic declination slip between the two images costs almost exactly
+   what the same amount of random plate-solve error costs.
 
 4. **The second point clear of the zenith and of due east and west.** Only the
-   second matters — that is where the mount is standing while you adjust it.
-   Near the zenith, turning the azimuth bolts does not move the star; near the
-   east–west axis, turning the altitude bolts does not. Either way one of the
-   two adjustments stops telling you anything and the correction is magnified.
+   second point matters — that is where the mount is pointing while you adjust it.
+   If pointing at the zenith, the azimuth adjustment will not shift the star.
+   Likewise, if pointing east-west the altitude adjustment is similarly impacted.
 
-5. **Work away from the meridian, not towards it.** The same two hour angles
-   in the other order can be two or three times worse, for the reason above.
+5. **Work away from the meridian, not towards it.** Place the first point closer
+   to the meridian and the second further away for the reason above.
 
-6. **Declination well away from the celestial equator.** Two axes fit both
-   images equally well and the script picks the one nearer the pole. Near the
-   equator that choice stops being reliable. Very close to the pole is no good
-   either — the two points converge, and the script says so.
+6. **Declination well away from the celestial equator.** Two axes fit both images
+   equally well and the script keeps whichever is nearer the pole. Near the equator
+   they sit at nearly equal distances, so that choice stops being reliable and you
+   may get odd results.
 
 ---
 
