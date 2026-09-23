@@ -208,7 +208,7 @@ In short, a good pair has:
 
 
 3. **Three to five hours apart.** This improves accuracy of the calculation:
-   
+
    | Separation | Resulting error in the axis |
    |---|---|
    | 1 h | 63″ |
@@ -222,8 +222,7 @@ In short, a good pair has:
    what the same amount of random plate-solve error costs.
 
    Beyond five hours the two points sit at very different altitudes, so
-   flexure differs more between them and eats into what the extra separation
-   buys you.
+   flexure may increase, offsetting the improvement of the extra separation.
 
 4. **The second point clear of the zenith and of due east and west.** Only the
    second point matters — that is where the mount is pointing while you adjust it.
@@ -238,11 +237,9 @@ In short, a good pair has:
    they sit at nearly equal distances, so that choice stops being reliable and you
    may get odd results.
 
-   Closer to the pole is not simply better, either. The two points converge as the
-   pole is approached, and with them the largest misalignment the script can
-   measure at all — about 30° at declination 60, 20° at 70 and 10° at 80. That
-   is still far more than any mount that has been roughly set up, which is why the
-   setting stops at ±80°.
+7. **Away from the pole.** Close to the pole the two images will be close on
+   the sky, magnifying any misalignment errors. The settings dialogue will
+   not allow setting declinations above ±80°.
 
 ---
 
