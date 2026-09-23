@@ -232,10 +232,11 @@ In short, a good pair has:
 5. **Work away from the meridian, not towards it.** Place the first point closer
    to the meridian and the second further away for the reason above.
 
-6. **Declination well away from the celestial equator.** Two axes fit both images
-   equally well and the script keeps whichever is nearer the pole. Near the equator
-   they sit at nearly equal distances, so that choice stops being reliable and you
-   may get odd results.
+6. **Declination well away from the celestial equator.** There are four possible
+   solutions to the polar alignment. Two are ruled out because the mount could not
+   have turned that way between the two images; of the pair that remain, the script
+   keeps whichever is nearer the pole. Near the equator those two sit at nearly equal
+   distances, so that choice stops being reliable and you may get odd results.
 
 7. **Away from the pole.** Close to the pole the two images will be close on
    the sky, magnifying any misalignment errors. The settings dialogue will
