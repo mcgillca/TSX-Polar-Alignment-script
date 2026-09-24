@@ -53,8 +53,17 @@ which keeps its own Python out of the way of anything else on your machine.
 
 ## Installing
 
-Download this repository (green **Code** button → **Download ZIP**) and unzip
-it, or clone it. Then:
+Download the zip for your machine and unzip it. Each contains only the files
+that platform needs.
+
+| Your machine | Download |
+|---|---|
+| macOS | **TSXS_Polar_v2.0_macOS.zip** |
+| Windows | **TSXS_Polar_v2.0_Windows.zip** |
+| Linux | **TSXS_Polar_v2.0_Linux.zip** |
+
+Click the file above in the listing, then the download button. (The loose
+files are in the repository too, if you would rather clone it.)
 
 ### macOS
 
@@ -85,13 +94,20 @@ To remove it later, run **uninstall.bat**.
 bash install.sh
 ```
 
-Installs under `~/.local/` — no sudo — and adds a desktop entry. The first
-launch opens a terminal window for the one-time download.
+No sudo needed. The first launch opens a terminal window for the one-time
+download.
+
+Installs under `~/.local/`, adds an entry to your application menu, and puts
+an icon on your Desktop. Use `bash install.sh --no-desktop` if you would
+rather not have the Desktop icon.
+
+When it finishes it prints where everything went — the program files, your
+settings file, the log, and the uninstall command.
 
 To remove it later:
 
 ```
-bash install.sh --uninstall
+tsxpolar-uninstall
 ```
 
 ### Running it directly
@@ -287,7 +303,7 @@ really are off.
 ## Changelog
 
 **V 2.0** — Rewritten in PySide6. Settings dialog and saved settings; installers
-for macOS, Windows and Linux; screening and horizon checks for the alignment
+for macOS, Windows and Linux, downloaded one per platform; screening and horizon checks for the alignment
 points; waits for darkness; survives failed solves; reads filter names from the
 wheel; restores and reports camera state; requires TheSkyX at startup.
 
